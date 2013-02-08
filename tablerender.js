@@ -16,9 +16,9 @@ Contact Url : https://github.com/svivekvarma
     var defaults = {
         data: [],
         emptyDataMessage: "No data available to show",
-        css: { table: "table", evenrow: "evenrow" },
-        headerTemplate: [{ fieldName: "Name", template: function (field) { return field + field; } }],
-        fieldTemplate: [{ fieldName: "StudentID", template: function (field) { return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>' } }],
+        css: { table: "table" },
+        headerTemplate: [],
+        fieldTemplate: [],
         hidefields: [],
         keyfields: [],
         actions: ["update", "delete", "add"],
