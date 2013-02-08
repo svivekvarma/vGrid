@@ -6,7 +6,7 @@ Plugin Name : tableRender
 
 License : Creative Commons Attribution 3.0 Unported License
 
-GitHub Repository:
+GitHub Repository: https://github.com/svivekvarma/tablerender
 
 Contact Url : https://github.com/svivekvarma
 ==================================================================================================
