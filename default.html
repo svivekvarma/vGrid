@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="tablerender.css" rel="stylesheet" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> 
+    <script src="tablerender.js"></script>
+    <script type="text/javascript">
+
+        var TEST = {};
+
+        TEST.data = {
+            "data": [],
+            css: { table: "grid"},
+            headerTemplate: [{ fieldName: "Address1", template: function (field) { return "Address"; } }],
+            fieldTemplate: [{ fieldName: "ID", template: function (field) { return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>' } }],
+            hidefields: ["ssn"],
+            keyfields: ["name"],
+            actions: ["update", "delete", "add"],
+            showPagination: true,
+            paginationPageSize: 10,
+            pageSize: 20,
+        };
+
+        TEST.data.data = [
+        { "ID": 1, "Name": "Aoe", "Address1": "23 Jami street" },
+        { "ID": 2, "Name": "Jill", "Address1": "31 Napierville" }
+            ]; 
+        $(document).ready(function () {
+            $('div.container').tablerender('renderTable', TEST.data);
+        });
+    
+    </script>
+</head>
+<body>
+    <div class="container">
+ 
+    </div>
+
+</body>
+
+</html>
