@@ -21,6 +21,7 @@ Contact Url : https://github.com/svivekvarma
         fieldTemplate: [],
         hidefields: [],
         keyfields: [],
+        amalgateColumns:[],
         actions: ["update", "delete", "add"],
         showPagination: true,
         paginationPageSize: 5,
@@ -232,10 +233,29 @@ Contact Url : https://github.com/svivekvarma
             for (var i = startrecord; i <= endrecord; i++) {
                 arrHTML = [];
                 arrHTML.push('  <tr>');
+                if (data.settings.amalgateColumns.length > 0) {
+                    for (var am = 0; am < data.settings.amalgateColumns.length; am++) {
+                        if (data.settings.amalgateColumns[am].prepend) {
+                            arrHTML.push('<td>');
+                            arrHTML.push(data.settings.amalgateColumns[am].template(data.settings.data[i]));
+                            arrHTML.push( '</td>');
+                        } 
+                    }
+                }
+
                 for (var j = 0; j < data.settings.headers.length; j++) {
                     arrHTML.push('  <td>');
                     arrHTML.push(tablerender.fieldOutput.apply($this, [data.settings.data[i][data.settings.headers[j]], data.settings.headers[j]]));
                     arrHTML.push('  </td>');
+                }
+                if (data.settings.amalgateColumns.length > 0) {
+                    for (var am = 0; am < data.settings.amalgateColumns.length; am++) {
+                        if (!data.settings.amalgateColumns[am].prepend) {
+                            arrHTML.push('<td>');
+                            arrHTML.push(data.settings.amalgateColumns[am].template(data.settings.data[i]));
+                            arrHTML.push('</td>');
+                        }
+                    }
                 }
                 arrHTML.push('  </tr>');
                 $this.children('.' + data.settings.css.table + ':first').children('tbody:first').append(arrHTML.join(''));
@@ -319,24 +339,49 @@ Contact Url : https://github.com/svivekvarma
                     }
                 }
 
-
                 var arrHTML = [];
                 arrHTML.push('<table class=\'' + data.settings.css.table + '\'>');
                 arrHTML.push(' <thead>');
-                if (data.settings.headers.length > 0) {
-                    for (var i = 0; i < data.settings.headers.length; i++) {
-                        arrHTML.push('  <th data-realname="' + data.settings.headers[i] + '">');
-                        arrHTML.push(tablerender.headerOutput.apply($this, [data.settings.headers[i]]));
-                        arrHTML.push('<span class=\'asc\'>&#9650;</span>');
-                        arrHTML.push('<span class=\'desc\'>&#9660;</span>');
-                        arrHTML.push('</th>');
+                if (data.settings.headers.length > 0 || data.settings.amalgateColumns.length > 0) {
+
+                    if (data.settings.amalgateColumns.length > 0) {
+                        for (var i = 0 ; i < data.settings.amalgateColumns.length; i++) {
+                            if (data.settings.amalgateColumns[i].prepend) {
+                                arrHTML.push('  <th data-realname="amalgated">');
+                                arrHTML.push( data.settings.amalgateColumns[i].columnHeader);
+                                arrHTML.push('</th>');
+                            } 
+                        }
                     }
+
+                    if (data.settings.headers.length > 0) {
+                        for (var i = 0; i < data.settings.headers.length; i++) {
+                            arrHTML.push('  <th data-realname="' + data.settings.headers[i] + '">');
+                            arrHTML.push(tablerender.headerOutput.apply($this, [data.settings.headers[i]]));
+                            arrHTML.push('<span class=\'asc\'>&#9650;</span>');
+                            arrHTML.push('<span class=\'desc\'>&#9660;</span>');
+                            arrHTML.push('</th>');
+                        }
+                    }
+
+                    if (data.settings.amalgateColumns.length > 0) {
+                        for (var i = 0 ; i < data.settings.amalgateColumns.length; i++) {
+                            if (!data.settings.amalgateColumns[i].prepend) {
+                                arrHTML.push('  <th data-realname="amalgated">');
+                                arrHTML.push(data.settings.amalgateColumns[i].columnHeader);
+                                arrHTML.push('</th>');
+                            }
+                        }
+                    }
+
+
                 }
                 else {
                     //arrHTML.push('  <th>');
                     arrHTML.push(data.settings.emptyDataMessage);
                     //arrHTML.push('</th>');
                 }
+
                 arrHTML.push('  </thead>');
                 arrHTML.push('  <tbody>');
                 arrHTML.push('  </tbody>');
@@ -353,9 +398,11 @@ Contact Url : https://github.com/svivekvarma
                 $(" th", this).bind('click', function () {
                     //console.log('Click event beign called on header');
                     var data = $this.data('tablerender');
-                    data.settings.sortField = $(this).attr('data-realname');
-                    $this.data('tablerender', data);
-                    tablerender.sort.apply($this);
+                    if (!($(this).attr('data-realname') === "amalgated")) {
+                        data.settings.sortField = $(this).attr('data-realname');
+                        $this.data('tablerender', data);
+                        tablerender.sort.apply($this);
+                    }
                 });
             });
         }

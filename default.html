@@ -12,10 +12,31 @@
         TEST.data = {
             "data": [],
             css: { table: "grid"},
-            headerTemplate: [{ fieldName: "Address1", template: function (field) { return "Address"; } }],
-            fieldTemplate: [{ fieldName: "ID", template: function (field) { return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>' } }],
-            hidefields: ["ssn"],
+            headerTemplate: [{
+                fieldName: "Address1",
+                template: function (field) {
+                    return "Address";
+                }
+            }],
+            fieldTemplate: [{
+                fieldName: "ID",
+                template: function (field) {
+                    return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>'
+                }
+            }],
+            hidefields: ["ssn","Name","Address1"],
             keyfields: ["name"],
+            amalgateColumns: [{
+                columnHeader: "",
+                amalgations: ["Name", "Address1"],
+                prepend: true,
+                template: function (fields) {
+                    var arrHTML = [];
+                    arrHTML.push('<div>Name: ' + fields["Name"] + '</div>');
+                    arrHTML.push('<div>Address:' + fields["Address1"] + '</div>');
+                    return arrHTML.join('');
+                }
+            }],
             actions: ["update", "delete", "add"],
             showPagination: true,
             paginationPageSize: 10,
