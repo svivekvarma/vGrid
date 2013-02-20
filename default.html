@@ -13,42 +13,54 @@
             "data": [],
             css: { table: "grid"},
             headerTemplate: [{
-                fieldName: "Address1",
+                fieldName: "Iso_language_code",
                 template: function (field) {
-                    return "Address";
+                    return "Language";
+                }
+            },
+            {
+                fieldName: "Profile_image_url",
+                template: function (field) {
+                    return "Profile Pic ";
                 }
             }],
             fieldTemplate: [{
-                fieldName: "ID",
+                fieldName: "Profile_image_url",
                 template: function (field) {
-                    return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>'
+                    return '<img src="'+field +'" alt="Profile image" width="25px">'
                 }
             }],
-            hidefields: ["ssn","Name","Address1"],
+            hidefields: ["Id", "Id_str","from_user", "metadata","profile_image_url", "Profile_image_url_https", "Geo", "Source", "To_user", "To_user_id", "To_user_id_str", "To_user_name", "From_user_id", "From_user_id_str", "From_user_name"],
             keyfields: ["name"],
             amalgateColumns: [{
                 columnHeader: "",
-                amalgations: ["Name", "Address1"],
+                amalgations: ["Profile_image_url", "From_user"],
                 prepend: true,
                 template: function (fields) {
                     var arrHTML = [];
-                    arrHTML.push('<div>Name: ' + fields["Name"] + '</div>');
-                    arrHTML.push('<div>Address:' + fields["Address1"] + '</div>');
+                    arrHTML.push('<img src="' + fields["profile_image_url"] + '" width="25px">');
+                    arrHTML.push('<span>@' + fields["from_user"] + '</span>');
                     return arrHTML.join('');
                 }
             }],
             actions: ["update", "delete", "add"],
             showPagination: true,
             paginationPageSize: 10,
-            pageSize: 20,
+            pageSize: 5,
         };
 
         TEST.data.data = [
         { "ID": 1, "Name": "Aoe", "Address1": "23 Jami street" },
         { "ID": 2, "Name": "Jill", "Address1": "31 Napierville" }
             ]; 
+
         $(document).ready(function () {
-            $('div.container').tablerender('renderTable', TEST.data);
+            //$('div.container').tablerender('renderTable', TEST.data);
+            $.getJSON("http://search.twitter.com/search.json?q=stackoverflow&callback=?", function (data) {
+                //alert(Object.keys(data).length);
+                TEST.data.data = data.results;
+                $('div.container').tablerender('renderTable', TEST.data);
+            });
         });
     
     </script>
