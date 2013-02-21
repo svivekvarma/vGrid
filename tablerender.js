@@ -21,7 +21,7 @@ Contact Url : https://github.com/svivekvarma
         fieldTemplate: [],
         hidefields: [],
         keyfields: [],
-        amalgateColumns:[],
+        amalgateColumns: [],
         actions: ["update", "delete", "add"],
         showPagination: true,
         paginationPageSize: 5,
@@ -153,6 +153,9 @@ Contact Url : https://github.com/svivekvarma
                             tablerender.renderPagination.apply($this);
                             //methods.renderRows.apply($this);
                         }
+                        else {
+                            return;
+                        }
                     }
                     else if (pagenum === "<<") {
                         if (!(settings.dataconfiguration.currentBlock - 1 <= 0)) {
@@ -161,6 +164,9 @@ Contact Url : https://github.com/svivekvarma
                             $this.data('tablerender', data);
                             tablerender.renderPagination.apply($this);
                             //methods.renderRows.apply($this);
+                        }
+                        else {
+                            return;
                         }
                     }
                     tablerender.renderRows.apply($this);
@@ -220,7 +226,7 @@ Contact Url : https://github.com/svivekvarma
                     startrecord = 0;
                 }
 
-                if (startrecord + currentpagesize > settings.data.length) {
+                if (startrecord + currentpagesize > data.settings.data.length) {
                     endrecord = data.settings.data.length - 1;
                 }
                 else {
@@ -238,8 +244,8 @@ Contact Url : https://github.com/svivekvarma
                         if (data.settings.amalgateColumns[am].prepend) {
                             arrHTML.push('<td>');
                             arrHTML.push(data.settings.amalgateColumns[am].template(data.settings.data[i]));
-                            arrHTML.push( '</td>');
-                        } 
+                            arrHTML.push('</td>');
+                        }
                     }
                 }
 
@@ -345,12 +351,12 @@ Contact Url : https://github.com/svivekvarma
                 if (data.settings.headers.length > 0 || data.settings.amalgateColumns.length > 0) {
 
                     if (data.settings.amalgateColumns.length > 0) {
-                        for (var i = 0 ; i < data.settings.amalgateColumns.length; i++) {
+                        for (var i = 0; i < data.settings.amalgateColumns.length; i++) {
                             if (data.settings.amalgateColumns[i].prepend) {
                                 arrHTML.push('  <th data-realname="amalgated">');
-                                arrHTML.push( data.settings.amalgateColumns[i].columnHeader);
+                                arrHTML.push(data.settings.amalgateColumns[i].columnHeader);
                                 arrHTML.push('</th>');
-                            } 
+                            }
                         }
                     }
 
@@ -365,7 +371,7 @@ Contact Url : https://github.com/svivekvarma
                     }
 
                     if (data.settings.amalgateColumns.length > 0) {
-                        for (var i = 0 ; i < data.settings.amalgateColumns.length; i++) {
+                        for (var i = 0; i < data.settings.amalgateColumns.length; i++) {
                             if (!data.settings.amalgateColumns[i].prepend) {
                                 arrHTML.push('  <th data-realname="amalgated">');
                                 arrHTML.push(data.settings.amalgateColumns[i].columnHeader);
