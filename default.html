@@ -56,7 +56,7 @@
 
         $(document).ready(function () {
             //$('div.container').tablerender('renderTable', TEST.data);
-            $.getJSON("http://search.twitter.com/search.json?q=stackoverflow&callback=?", function (data) {
+            $.getJSON("http://search.twitter.com/search.json?q=beyonce&callback=?", function (data) {
                 //alert(Object.keys(data).length);
                 TEST.data.data = data.results;
                 $('div.container').tablerender('renderTable', TEST.data);
