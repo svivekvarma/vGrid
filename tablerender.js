@@ -22,6 +22,7 @@ Contact Url : https://github.com/svivekvarma
         hidefields: [],
         keyfields: [],
         amalgateColumns: [],
+        datetimefields:[],
         actions: ["update", "delete", "add"],
         showPagination: true,
         paginationPageSize: 5,
@@ -292,6 +293,18 @@ Contact Url : https://github.com/svivekvarma
                     }
                 }
             }
+
+            if (data.settings.datetimefields.length > 0) {
+                for (var i = 0; i < data.settings.datetimefields.length; i++) {
+                    if (data.settings.datetimefields[i].toLowerCase() === fieldName.toLowerCase()) {
+                        var date = new Date(parseInt(field.substr(6)));
+
+                        return date.toLocaleString() ;
+                    }
+                }
+            }
+
+
             return field;
         }
     }
