@@ -159,9 +159,9 @@ Contact Url : https://github.com/svivekvarma
                         }
                     }
                     else if (pagenum === "<<") {
-                        if (!(settings.dataconfiguration.currentBlock - 1 <= 0)) {
-                            settings.dataconfiguration.currentBlock = settings.dataconfiguration.currentBlock - 1;
-                            settings.dataconfiguration.currentPage = settings.dataconfiguration.currentBlock * data.settings.paginationPageSize - data.settings.paginationPageSize + 1;
+                        if (!(data.settings.dataconfiguration.currentBlock - 1 <= 0)) {
+                            data.settings.dataconfiguration.currentBlock = data.settings.dataconfiguration.currentBlock - 1;
+                            data.settings.dataconfiguration.currentPage = data.settings.dataconfiguration.currentBlock * data.settings.paginationPageSize - data.settings.paginationPageSize + 1;
                             $this.data('tablerender', data);
                             tablerender.renderPagination.apply($this);
                             //methods.renderRows.apply($this);

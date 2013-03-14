@@ -49,12 +49,17 @@
         { "ID": 2, "Name": "Jill", "Address1": "31 Napierville", "datecreated": "\/Date(1239018869048)\/" }
         ];
         $(document).ready(function () {
-            $('div.container').tablerender('renderTable', TEST.data);
+            $('div.container:nth-child(1)').tablerender('renderTable', TEST.data);
+             $('div.container:nth-child(2)').tablerender('renderTable', TEST.data);
         });
 
     </script>
 </head>
 <body>
+    <div class="container">
+ 
+    </div>
+
     <div class="container">
  
     </div>
