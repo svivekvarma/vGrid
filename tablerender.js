@@ -22,7 +22,7 @@ Contact Url : https://github.com/svivekvarma
         hidefields: [],
         keyfields: [],
         amalgateColumns: [],
-        datetimefields:[],
+        datetimefields: [],
         actions: ["update", "delete", "add"],
         showPagination: true,
         paginationPageSize: 5,
@@ -62,6 +62,7 @@ Contact Url : https://github.com/svivekvarma
         extractHeaders: function () {
             var $this = $(this), data = $this.data('tablerender');
             var headers = [];
+            console.log(data.settings.dataconfiguration);
             if (data.settings.data.length > 0) {
                 var obj = data.settings.data[0];
                 for (var key in obj) {
@@ -297,9 +298,13 @@ Contact Url : https://github.com/svivekvarma
             if (data.settings.datetimefields.length > 0) {
                 for (var i = 0; i < data.settings.datetimefields.length; i++) {
                     if (data.settings.datetimefields[i].toLowerCase() === fieldName.toLowerCase()) {
-                        var date = new Date(parseInt(field.substr(6)));
+                        if (!(field === null || field === undefined || field === '')) {
+                            var date = new Date(parseInt(field.substr(6)));
+                            return date.toLocaleString();
+                        } else {
+                            return '';
+                        }
 
-                        return date.toLocaleString() ;
                     }
                 }
             }
@@ -427,6 +432,7 @@ Contact Url : https://github.com/svivekvarma
         }
     };
     $.fn.tablerender = function (method, options) {
+        defaults.dataconfiguration = {};
         settings = $.extend({}, defaults, options);
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
