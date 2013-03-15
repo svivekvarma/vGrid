@@ -62,7 +62,7 @@ Contact Url : https://github.com/svivekvarma
         extractHeaders: function () {
             var $this = $(this), data = $this.data('tablerender');
             var headers = [];
-            console.log(data.settings.dataconfiguration);
+            //console.log(data.settings.dataconfiguration);
             if (data.settings.data.length > 0) {
                 var obj = data.settings.data[0];
                 for (var key in obj) {
@@ -363,6 +363,11 @@ Contact Url : https://github.com/svivekvarma
                     }
                 }
 
+                data = $this.data('tablerender');
+                //console.log(data);
+                //console.log(settings);
+
+
                 var arrHTML = [];
                 arrHTML.push('<table class=\'' + data.settings.css.table + '\'>');
                 arrHTML.push(' <thead>');
@@ -432,8 +437,10 @@ Contact Url : https://github.com/svivekvarma
         }
     };
     $.fn.tablerender = function (method, options) {
-        defaults.dataconfiguration = {};
-        settings = $.extend({}, defaults, options);
+        //defaults.dataconfiguration = {};
+        settings = $.extend(true,{}, defaults, options);
+        //console.log(defaults);
+        //console.log(settings);
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
@@ -441,5 +448,6 @@ Contact Url : https://github.com/svivekvarma
         } else {
             $.error('Method ' + method + ' does not exist on jQuery.tablerender');
         }
+
     };
 })(jQuery);
