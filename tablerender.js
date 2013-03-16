@@ -20,6 +20,8 @@ Contact Url : https://github.com/svivekvarma
         headerTemplate: [],
         fieldTemplate: [],
         hidefields: [],
+        showOnlyMode: false,
+        showOnlyFields:[],
         keyfields: [],
         amalgateColumns: [],
         datetimefields: [],
@@ -67,9 +69,16 @@ Contact Url : https://github.com/svivekvarma
                 var obj = data.settings.data[0];
                 for (var key in obj) {
                     if (obj.hasOwnProperty(key) && typeof obj[key] !== 'function') {
-                        var result = $.grep(data.settings.hidefields, function (a) { return a.toLowerCase() === key.toLowerCase() });
-                        if (result.length === 0) {
-                            headers.push(key);
+                        if (data.settings.showOnlyMode) {
+                            var result = $.grep(data.settings.showOnlyFields, function (a) { return a.toLowerCase() === key.toLowerCase() });
+                            if (result.length > 0) {
+                                headers.push(key);
+                            }
+                        } else {
+                            var result = $.grep(data.settings.hidefields, function (a) { return a.toLowerCase() === key.toLowerCase() });
+                            if (result.length === 0) {
+                                headers.push(key);
+                            }
                         }
                     }
                 }

@@ -9,7 +9,7 @@
 
         var TEST = {};
 
-        TEST.data = {
+        TEST = {
             "data": [],
             css: { table: "grid" },
             headerTemplate: [{
@@ -38,19 +38,45 @@
                 }
             }],
             datetimefields:["datecreated"],
-            actions: ["update", "delete", "add"],
             showPagination: true,
             paginationPageSize: 10,
             pageSize: 20,
         };
 
-        TEST.data.data = [
+        TEST1 = {
+            "data": [],
+            css: { table: "grid" },
+            headerTemplate: [{
+                fieldName: "Address1",
+                template: function (field) {
+                    return "Address";
+                }
+            }],
+            fieldTemplate: [{
+                fieldName: "ID",
+                template: function (field) {
+                    return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>'
+                }
+            }],
+            keyfields: ["ID"],
+            showOnlyMode: true,
+            showOnlyFields:["Name","Address1"],
+            datetimefields: ["datecreated"],
+            showPagination: true,
+            paginationPageSize: 10,
+            pageSize: 20,
+        };
+
+        TEST.data = [
         { "ID": 1, "Name": "Aoe", "Address1": "23 Jami street", "datecreated": "\/Date(1239018869048)\/" },
         { "ID": 2, "Name": "Jill", "Address1": "31 Napierville", "datecreated": "\/Date(1239018869048)\/" }
         ];
+
+        TEST1.data = TEST.data;
+
         $(document).ready(function () {
-            $('div.container:nth-child(1)').tablerender('renderTable', TEST.data);
-             $('div.container:nth-child(2)').tablerender('renderTable', TEST.data);
+            $('div.container:nth-child(1)').tablerender('renderTable', TEST);
+            $('div.container:nth-child(2)').tablerender('renderTable', TEST1);
         });
 
     </script>
@@ -63,7 +89,6 @@
     <div class="container">
  
     </div>
-
 </body>
 
 </html>
