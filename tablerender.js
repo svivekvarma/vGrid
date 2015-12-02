@@ -139,25 +139,13 @@ Contact Url : https://github.com/svivekvarma
             $this.data('tablerender', data);
             tablerender._bind.apply($this);
         },
-        _bind: function () {
-
-            //Create binding for click event on header
-            var $this = $(this);
-            $(" th", this)
-                .bind('click.tablerender', function () {
-                    //console.log('Click event beign called on header');
-                    var data = $this.data('tablerender');
-                    if (!($(this)
-                            .attr('data-realname') === "amalgated")) {
-                        data.settings.sortField = $(this)
-                            .attr('data-realname');
-                        $this.data('tablerender', data);
-                        tablerender.sort.apply($this);
-                    }
-                });
-
+        _unbindPaginationEvents: function () {
+            $(' .tablerenderpagination > ul > li', this)
+                .unbind('click.tablerender');
+        },
+        _bindPaginationEvents: function () {
             // Bind pagination events
-
+            var $this = $(this);
             $(' .tablerenderpagination > ul > li', $this)
                 .bind('click.tablerender', function () {
 
@@ -179,6 +167,7 @@ Contact Url : https://github.com/svivekvarma
                             data.settings.dataconfiguration.currentBlock = data.settings.dataconfiguration.currentBlock + 1;
                             data.settings.dataconfiguration.currentPage = data.settings.dataconfiguration.currentBlock * data.settings.paginationPageSize - data.settings.paginationPageSize + 1;
                             $this.data('tablerender', data);
+                            tablerender.renderRows.apply($this);
                             tablerender.renderPagination.apply($this);
                             //methods.renderRows.apply($this);
                         } else {
@@ -189,14 +178,35 @@ Contact Url : https://github.com/svivekvarma
                             data.settings.dataconfiguration.currentBlock = data.settings.dataconfiguration.currentBlock - 1;
                             data.settings.dataconfiguration.currentPage = data.settings.dataconfiguration.currentBlock * data.settings.paginationPageSize - data.settings.paginationPageSize + 1;
                             $this.data('tablerender', data);
+                            tablerender.renderRows.apply($this);
                             tablerender.renderPagination.apply($this);
                             //methods.renderRows.apply($this);
                         } else {
                             return;
                         }
                     }
-                    tablerender.renderRows.apply($this);
+
                 });
+
+        },
+        _bind: function () {
+
+            //Create binding for click event on header
+            var $this = $(this);
+            $(" th", this)
+                .bind('click.tablerender', function () {
+                    //console.log('Click event beign called on header');
+                    var data = $this.data('tablerender');
+                    if (!($(this)
+                            .attr('data-realname') === "amalgated")) {
+                        data.settings.sortField = $(this)
+                            .attr('data-realname');
+                        $this.data('tablerender', data);
+                        tablerender.sort.apply($this);
+                    }
+                });
+
+
         },
         customSort: function (property, type) {
             var sortOrder = 1;
@@ -255,6 +265,7 @@ Contact Url : https://github.com/svivekvarma
         renderPagination: function () {
             var $this = $(this),
                 data = $this.data('tablerender');
+
             if (data.settings.showPagination) {
                 var arrPagination = [];
                 if (!data.settings.dataconfiguration.renderedPagination) {
@@ -278,6 +289,8 @@ Contact Url : https://github.com/svivekvarma
                     data.settings.dataconfiguration.currentPage = 1;
                     data.settings.dataconfiguration.currentBlock = 1;
                 }
+
+                tablerender._unbindPaginationEvents.apply($this);
 
                 // render the page number based on block logic
                 var startpage;
@@ -307,8 +320,11 @@ Contact Url : https://github.com/svivekvarma
                 $(' .tablerenderpagination > ul', $this)
                     .html(arrPagination.join(''));
 
+
                 data.settings.dataconfiguration.renderedPagination = true;
+                tablerender._bindPaginationEvents.apply($this);
                 $this.data('tablerender', data);
+
 
             }
         },
