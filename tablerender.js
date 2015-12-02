@@ -155,6 +155,48 @@ Contact Url : https://github.com/svivekvarma
                         tablerender.sort.apply($this);
                     }
                 });
+
+            // Bind pagination events
+
+            $(' .tablerenderpagination > ul > li', $this)
+                .bind('click.tablerender', function () {
+
+                    var pagenum = $(' a', this)
+                        .text();
+                    var data = $this.data('tablerender');
+                    $(' .tablerenderpagination > ul > li', $this)
+                        .removeClass('active');
+
+
+                    if (!(pagenum === "<<" || pagenum === ">>")) {
+                        data.settings.dataconfiguration.currentPage = parseInt($(' a', this)
+                            .text(), 10);
+                        $this.data('tablerender', data);
+                        $(this)
+                            .addClass('active');
+                    } else if (pagenum === ">>") {
+                        if (!(data.settings.dataconfiguration.currentBlock + 1 > data.settings.dataconfiguration.totalBlocks)) {
+                            data.settings.dataconfiguration.currentBlock = data.settings.dataconfiguration.currentBlock + 1;
+                            data.settings.dataconfiguration.currentPage = data.settings.dataconfiguration.currentBlock * data.settings.paginationPageSize - data.settings.paginationPageSize + 1;
+                            $this.data('tablerender', data);
+                            tablerender.renderPagination.apply($this);
+                            //methods.renderRows.apply($this);
+                        } else {
+                            return;
+                        }
+                    } else if (pagenum === "<<") {
+                        if (!(data.settings.dataconfiguration.currentBlock - 1 <= 0)) {
+                            data.settings.dataconfiguration.currentBlock = data.settings.dataconfiguration.currentBlock - 1;
+                            data.settings.dataconfiguration.currentPage = data.settings.dataconfiguration.currentBlock * data.settings.paginationPageSize - data.settings.paginationPageSize + 1;
+                            $this.data('tablerender', data);
+                            tablerender.renderPagination.apply($this);
+                            //methods.renderRows.apply($this);
+                        } else {
+                            return;
+                        }
+                    }
+                    tablerender.renderRows.apply($this);
+                });
         },
         customSort: function (property, type) {
             var sortOrder = 1;
@@ -267,47 +309,7 @@ Contact Url : https://github.com/svivekvarma
 
                 data.settings.dataconfiguration.renderedPagination = true;
                 $this.data('tablerender', data);
-                // Bind pagination events
 
-                $(' .tablerenderpagination > ul > li', $this)
-                    .bind('click', function () {
-
-                        var pagenum = $(' a', this)
-                            .text();
-                        var data = $this.data('tablerender');
-                        $(' .tablerenderpagination > ul > li', $this)
-                            .removeClass('active');
-
-
-                        if (!(pagenum === "<<" || pagenum === ">>")) {
-                            data.settings.dataconfiguration.currentPage = parseInt($(' a', this)
-                                .text(), 10);
-                            $this.data('tablerender', data);
-                            $(this)
-                                .addClass('active');
-                        } else if (pagenum === ">>") {
-                            if (!(data.settings.dataconfiguration.currentBlock + 1 > data.settings.dataconfiguration.totalBlocks)) {
-                                data.settings.dataconfiguration.currentBlock = data.settings.dataconfiguration.currentBlock + 1;
-                                data.settings.dataconfiguration.currentPage = data.settings.dataconfiguration.currentBlock * data.settings.paginationPageSize - data.settings.paginationPageSize + 1;
-                                $this.data('tablerender', data);
-                                tablerender.renderPagination.apply($this);
-                                //methods.renderRows.apply($this);
-                            } else {
-                                return;
-                            }
-                        } else if (pagenum === "<<") {
-                            if (!(data.settings.dataconfiguration.currentBlock - 1 <= 0)) {
-                                data.settings.dataconfiguration.currentBlock = data.settings.dataconfiguration.currentBlock - 1;
-                                data.settings.dataconfiguration.currentPage = data.settings.dataconfiguration.currentBlock * data.settings.paginationPageSize - data.settings.paginationPageSize + 1;
-                                $this.data('tablerender', data);
-                                tablerender.renderPagination.apply($this);
-                                //methods.renderRows.apply($this);
-                            } else {
-                                return;
-                            }
-                        }
-                        tablerender.renderRows.apply($this);
-                    });
             }
         },
         sort: function () {
