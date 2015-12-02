@@ -33,15 +33,129 @@ Contact Url : https://github.com/svivekvarma
         datefields: [],
         datetimefields: [],
         actions: ["update", "delete", "add"],
-        rowEvents: function () { },
+        rowEvents: function () {},
         showPagination: true,
         paginationPageSize: 5,
         pageSize: 10,
+        showSearchField: true,
         dataconfiguration: {}
     };
     var settings = {};
 
     var tablerender = {
+        searchText: function (data, searchtext) {
+            var filtereddata = [];
+            for (var i = 0; i < data.length; i++) {
+                for (var property in data[i]) {
+                    var tobebroken = false;
+                    if (data[i].hasOwnProperty(property)) {
+
+                        if (data[i][property] != null && data[i][property] != '' && data[i][property] != undefined) {
+                            if (data[i][property].toString().toLowerCase().indexOf(searchtext.toLowerCase()) >= 0) {
+                                filtereddata.push(data[i]);
+                                tobebroken = true;
+                            }
+                        }
+                        if (tobebroken)
+                            break;
+                    }
+                }
+            }
+            return filtereddata;
+        },
+        _renderTable: function (data) {
+
+            var $this = $(this);
+            // Extract headers to be displayed
+
+            data.settings.headers = tablerender.extractHeaders.apply($this);
+
+            //calculate the pagination and render it
+            if (data.settings.headers.length > 0) {
+                if (data.settings.showPagination) {
+                    tablerender.renderPagination.apply($this);
+                }
+            }
+
+            data = $this.data('tablerender');
+            //console.log(data);
+            //console.log(settings);
+
+
+            var arrHTML = [];
+            arrHTML.push('<div class="searchsection"><label>Search </label><input type="search" class="searchtextfield" placeholder="Filter your results by typing search text"/></div>');
+            arrHTML.push('<div class="clearboth"></div>');
+
+            arrHTML.push('<table class=\'' + data.settings.css.table + '\'>');
+            arrHTML.push(' <thead>');
+            if ((data.settings.headers.length > 0 || data.settings.amalgateColumns.length > 0) && data.settings.data.length > 0) {
+
+                if (data.settings.amalgateColumns.length > 0) {
+                    for (var i = 0; i < data.settings.amalgateColumns.length; i++) {
+                        if (data.settings.amalgateColumns[i].prepend) {
+                            arrHTML.push(' <th data-realname="amalgated">');
+                            arrHTML.push(data.settings.amalgateColumns[i].columnHeader);
+                            arrHTML.push('</th>');
+                        }
+                    }
+                }
+
+                if (data.settings.headers.length > 0) {
+                    for (var i = 0; i < data.settings.headers.length; i++) {
+                        arrHTML.push(' <th data-realname="' + data.settings.headers[i] + '">');
+                        arrHTML.push(tablerender.headerOutput.apply($this, [data.settings.headers[i]]));
+                        arrHTML.push('<span class=\'asc\'>▲</span>');
+                        arrHTML.push('<span class=\'desc\'>▼</span>');
+                        arrHTML.push('</th>');
+                    }
+                }
+
+                if (data.settings.amalgateColumns.length > 0) {
+                    for (var i = 0; i < data.settings.amalgateColumns.length; i++) {
+                        if (!data.settings.amalgateColumns[i].prepend) {
+                            arrHTML.push(' <th data-realname="amalgated">');
+                            arrHTML.push(data.settings.amalgateColumns[i].columnHeader);
+                            arrHTML.push('</th>');
+                        }
+                    }
+                }
+
+
+            } else {
+                arrHTML.push(' <th>');
+                arrHTML.push(data.settings.emptyDataMessage);
+                arrHTML.push('</th>');
+            }
+
+            arrHTML.push(' </thead>');
+            arrHTML.push(' <tbody>');
+            arrHTML.push(' </tbody>');
+            arrHTML.push('</table>');
+            $this.append(arrHTML.join(''));
+
+            // Start generating the rows
+
+            tablerender.renderRows.apply($this);
+            $this.data('tablerender', data);
+            tablerender._bind.apply($this);
+        },
+        _bind: function () {
+
+            //Create binding for click event on header
+            var $this = $(this);
+            $(" th", this)
+                .bind('click.tablerender', function () {
+                    //console.log('Click event beign called on header');
+                    var data = $this.data('tablerender');
+                    if (!($(this)
+                            .attr('data-realname') === "amalgated")) {
+                        data.settings.sortField = $(this)
+                            .attr('data-realname');
+                        $this.data('tablerender', data);
+                        tablerender.sort.apply($this);
+                    }
+                });
+        },
         customSort: function (property, type) {
             var sortOrder = 1;
             if (property[0] === "-") {
@@ -157,20 +271,20 @@ Contact Url : https://github.com/svivekvarma
 
                 $(' .tablerenderpagination > ul > li', $this)
                     .bind('click', function () {
-                    
+
                         var pagenum = $(' a', this)
-                        .text();
+                            .text();
                         var data = $this.data('tablerender');
                         $(' .tablerenderpagination > ul > li', $this)
-                        .removeClass('active');
+                            .removeClass('active');
 
 
                         if (!(pagenum === "<<" || pagenum === ">>")) {
                             data.settings.dataconfiguration.currentPage = parseInt($(' a', this)
-                            .text(), 10);
+                                .text(), 10);
                             $this.data('tablerender', data);
                             $(this)
-                            .addClass('active');
+                                .addClass('active');
                         } else if (pagenum === ">>") {
                             if (!(data.settings.dataconfiguration.currentBlock + 1 > data.settings.dataconfiguration.totalBlocks)) {
                                 data.settings.dataconfiguration.currentBlock = data.settings.dataconfiguration.currentBlock + 1;
@@ -328,7 +442,7 @@ Contact Url : https://github.com/svivekvarma
         },
         fieldOutput: function () {
             var $this = $(this),
-            data = $this.data('tablerender');
+                data = $this.data('tablerender');
             var record = arguments[2];
             var fieldName = arguments[1];
             var field = arguments[0];
@@ -415,89 +529,7 @@ Contact Url : https://github.com/svivekvarma
                 });
                 $this.data('tablerender', data);
 
-                // Extract headers to be displayed
-
-                data.settings.headers = tablerender.extractHeaders.apply($this);
-
-                //calculate the pagination and render it
-                if (data.settings.headers.length > 0) {
-                    if (data.settings.showPagination) {
-                        tablerender.renderPagination.apply($this);
-                    }
-                }
-
-                data = $this.data('tablerender');
-                //console.log(data);
-                //console.log(settings);
-
-
-                var arrHTML = [];
-                arrHTML.push('<table class=\'' + data.settings.css.table + '\'>');
-                arrHTML.push(' <thead>');
-                if ((data.settings.headers.length > 0 || data.settings.amalgateColumns.length > 0) && data.settings.data.length > 0) {
-
-                    if (data.settings.amalgateColumns.length > 0) {
-                        for (var i = 0; i < data.settings.amalgateColumns.length; i++) {
-                            if (data.settings.amalgateColumns[i].prepend) {
-                                arrHTML.push(' <th data-realname="amalgated">');
-                                arrHTML.push(data.settings.amalgateColumns[i].columnHeader);
-                                arrHTML.push('</th>');
-                            }
-                        }
-                    }
-
-                    if (data.settings.headers.length > 0) {
-                        for (var i = 0; i < data.settings.headers.length; i++) {
-                            arrHTML.push(' <th data-realname="' + data.settings.headers[i] + '">');
-                            arrHTML.push(tablerender.headerOutput.apply($this, [data.settings.headers[i]]));
-                            arrHTML.push('<span class=\'asc\'>▲</span>');
-                            arrHTML.push('<span class=\'desc\'>▼</span>');
-                            arrHTML.push('</th>');
-                        }
-                    }
-
-                    if (data.settings.amalgateColumns.length > 0) {
-                        for (var i = 0; i < data.settings.amalgateColumns.length; i++) {
-                            if (!data.settings.amalgateColumns[i].prepend) {
-                                arrHTML.push(' <th data-realname="amalgated">');
-                                arrHTML.push(data.settings.amalgateColumns[i].columnHeader);
-                                arrHTML.push('</th>');
-                            }
-                        }
-                    }
-
-
-                } else {
-                    arrHTML.push(' <th>');
-                    arrHTML.push(data.settings.emptyDataMessage);
-                    arrHTML.push('</th>');
-                }
-
-                arrHTML.push(' </thead>');
-                arrHTML.push(' <tbody>');
-                arrHTML.push(' </tbody>');
-                arrHTML.push('</table>');
-                $this.append(arrHTML.join(''));
-
-                // Start generating the rows
-
-                tablerender.renderRows.apply($this);
-                $this.data('tablerender', data);
-
-                //Create binding for click event on header
-
-                $(" th", this)
-                    .bind('click', function () {
-                        //console.log('Click event beign called on header');
-                        var data = $this.data('tablerender');
-                        if (!($(this)
-                        .attr('data-realname') === "amalgated")) {
-                            data.settings.sortField = $(this)
-                            .attr('data-realname');
-                            $this.data('tablerender', data);
-                            tablerender.sort.apply($this);
-                        }
-                    });
+                tablerender._renderTable.apply($this, [data]);
             });
         }
     };

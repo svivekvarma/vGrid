@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title></title>
+    <link href="tablerender.css" rel="stylesheet" />
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="tablerender.js"></script>
+    <script type="text/javascript">
+        var TEST1 = {};
+
+        TEST1 = {
+            "data": [],
+            css: {
+                table: "grid"
+            },
+            headerTemplate: [{
+                fieldName: "Address1",
+                template: function (field) {
+                    return "Address";
+                }
+            }],
+            fieldTemplate: [{
+                fieldName: "ID",
+                template: function (field) {
+                    return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>'
+                }
+            }],
+            hidefields: ["id"],
+            keyfields: ["ID"],
+            amalgateColumns: [{
+                columnHeader: "",
+                amalgations: ["Name", "Address1"],
+                prepend: true,
+                template: function (fields) {
+                    var arrHTML = [];
+                    arrHTML.push('<div>Date of Birth: ' + fields["dateofbirth"] + '</div>');
+                    arrHTML.push('<div>Accounts:' + fields["accounts"] + '</div>');
+                    return arrHTML.join('');
+                }
+            }],
+            datetimefields: ["datecreated"],
+            showPagination: true,
+            paginationPageSize: 10,
+            pageSize: 20,
+        };
+
+        TEST2 = {
+            "data": [],
+            css: {
+                table: "grid"
+            },
+            headerTemplate: [{
+                fieldName: "Address1",
+                template: function (field) {
+                    return "Address";
+                }
+            }],
+            fieldTemplate: [{
+                fieldName: "ID",
+                template: function (field) {
+                    return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>'
+                }
+            }],
+            keyfields: ["ID"],
+            showOnlyMode: true,
+            showOnlyFields: ["Name", "dateofbirth", "comments"],
+            datetimefields: ["datecreated"],
+            showPagination: true,
+            paginationPageSize: 10,
+            pageSize: 20,
+        };
+
+        TEST3 = {
+            "data": [],
+            css: {
+                table: "grid"
+            },
+            headerTemplate: [{
+                fieldName: "Address1",
+                template: function (field) {
+                    return "Address";
+                }
+            }],
+            fieldTemplate: [{
+                fieldName: "ID",
+                template: function (field) {
+                    return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>'
+                }
+            }],
+            keyfields: ["ID"],
+            showOnlyMode: true,
+            showOnlyFields: ["Name", "dateofbirth", "comments"],
+            datetimefields: ["datecreated"],
+            showPagination: false,
+            paginationPageSize: 10,
+            pageSize: 20,
+        };
+
+
+
+        $(document).ready(function () {
+
+            $.getJSON('data.json').done(function (data) {
+
+                TEST1.data = data.fathers;
+                TEST2.data = data.fathers;
+                TEST3.data = data.fathers;
+                $('#container1').tablerender('renderTable', TEST1);
+                $('#container2').tablerender('renderTable', TEST2);
+                $('#container3').tablerender('renderTable', TEST3);
+            });
+
+
+        });
+    </script>
+</head>
+
+<body>
+    <div id="container1" class="container">
+
+    </div>
+
+    <div id="container2" class="container2">
+
+    </div>
+
+
+    <div id="container3" class="container3">
+
+    </div>
+</body>
+
+</html>
