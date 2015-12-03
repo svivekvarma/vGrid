@@ -7,19 +7,18 @@ Additional information about usage and options and demos can be found here
 
 <a href="http://svivekvarma.github.com/vGrid/"> Additional Info</a>
 
-Usage
-______
+##Usage
 
-*Markup
-
+###Markup
+```
   <div id="container1" class="container">
 
     </div>
+```
 
+###Configuration
 
-*Configuration
-
-
+```
     TEST1 = {
             "data": [],
             css: {
@@ -55,11 +54,11 @@ ______
             paginationPageSize: 10,
             pageSize: 20,
 	    };
+```
 
+###Initialize the plugin
 
-* Initialize the plugin
-
-
+```
    $(document).ready(function () {
 
             $.getJSON('data.json').done(function (data) {
@@ -73,5 +72,5 @@ ______
 
         });
 
-
+```
 
