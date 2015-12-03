@@ -12,7 +12,7 @@ ______
 
 *Markup
 
-´´´html
+´´´
   <div id="container1" class="container">
 
     </div>
@@ -20,7 +20,7 @@ ______
 ´´´
 *Configuration
 
-´´´javascript
+´´´
 
     TEST1 = {
             "data": [],
@@ -62,7 +62,7 @@ ______
 
 * Initialize the plugin
 
-´´´javascript
+´´´
    $(document).ready(function () {
 
             $.getJSON('data.json').done(function (data) {
