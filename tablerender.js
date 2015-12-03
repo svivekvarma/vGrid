@@ -36,7 +36,7 @@ Contact Url : https://github.com/svivekvarma
         rowEvents: function() {},
         showPagination: true,
         paginationPageSize: 5,
-        pageSize: 10,
+        pageSize: 5,
         showSearchField: true,
         dataconfiguration: {}
     };
@@ -437,7 +437,7 @@ Contact Url : https://github.com/svivekvarma
                 
                 arrHTML = [];
                 arrHTML.push(' <tr>');
-                arrHTML.push(' <td colspan="' +headers.length + 1 + '" class="norecords">No records found for the search criteria</td>');
+                arrHTML.push(' <td colspan="' +headers.length + data.settings.amalgateColumns.length + '" class="norecords">No records found for the search criteria</td>');
                 arrHTML.push(' </tr>');
                 $this.children('.' + data.settings.css.table + ':first')
                     .children('tbody:first')
@@ -486,8 +486,6 @@ Contact Url : https://github.com/svivekvarma
                     .children('tbody:first')
                     .append(arrHTML.join(''));
             }
-
-
             data.settings.rowEvents();
         },
         headerOutput: function() {
