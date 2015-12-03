@@ -12,15 +12,13 @@ ______
 
 *Markup
 
-´´´
   <div id="container1" class="container">
 
     </div>
 
-´´´
+
 *Configuration
 
-´´´
 
     TEST1 = {
             "data": [],
@@ -58,11 +56,10 @@ ______
             pageSize: 20,
 	    };
 
-´´´
 
 * Initialize the plugin
 
-´´´
+
    $(document).ready(function () {
 
             $.getJSON('data.json').done(function (data) {
@@ -76,5 +73,5 @@ ______
 
         });
 
-´´´
+
 
