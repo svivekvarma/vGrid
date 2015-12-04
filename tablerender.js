@@ -32,7 +32,6 @@ Contact Url : https://github.com/svivekvarma
         amalgateColumns: [],
         datefields: [],
         datetimefields: [],
-        actions: ["update", "delete", "add"],
         rowEvents: function () {},
         showPagination: true,
         paginationPageSize: 5,

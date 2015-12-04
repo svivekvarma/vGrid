@@ -13,14 +13,14 @@
     display: inline-block;
     margin: 0px;
     padding: 0px;
-    border: 1px solid #09517D;
+    border: 1px solid #333;
     border-radius: 4px;
 }
 
 .tablerenderpagination ul li {
     float: left;
     padding: 10px;
-    border-right: 1px solid #09517D;
+    border-right: 1px solid #333;
 }
 
 
@@ -76,7 +76,8 @@ ul li.active:hover {
     font-size: 14px;
     table-layout: fixed;
     text-align: left;
-    font-family: sans-serif;
+    font-family: "Helvetica";
+    color: #333;
 }
 
 .overridewidth {
@@ -128,15 +129,18 @@ ul li.active:hover {
     border-radius: 3px 3px 0 0;
 }
 
+.grid tbody tr:nth-of-type(odd) td {
+    background-color: #f9f9f9;
+}
+
 .grid td {
     padding: 8px;
-    background: #F0F3F5;
+    background: #ffffff;
     border-top: 1px solid #fff;
-    color: #669;
 }
 
 .grid tbody tr:hover td {
-    background: #C2E0F2;
+    background: #D2D2D2;
     -o-transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
     -moz-transition: all 0.3s ease-in-out;
