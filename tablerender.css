@@ -74,11 +74,12 @@ ul li.active:hover {
     margin: 5px auto;
     border-collapse: collapse;
     font-size: 14px;
-    table-layout: fixed;
+    table-layout: auto;
     text-align: left;
     font-family: "Helvetica";
     color: #333;
-    width:100%;
+    width: 100%;
+    word-wrap: break-word;
 }
 
 .overridewidth {
@@ -96,12 +97,13 @@ ul li.active:hover {
 }
 
 .grid .sortindicator {
-    float:right;
+    float: right;
     font-size: 16px;
     font-weight: bold;
 }
+
 .grid span.asc,
-.grid span.desc { 
+.grid span.desc {
     margin: 2px;
     display: none;
     line-height: 15px;
