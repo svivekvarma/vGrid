@@ -73,26 +73,9 @@
 
         TEST3 = {
             "data": [],
-            css: {
-                table: "grid"
-            },
-            headerTemplate: [{
-                fieldName: "Address1",
-                template: function (field) {
-                    return "Address";
-                }
-            }],
-            fieldTemplate: [{
-                fieldName: "ID",
-                template: function (field) {
-                    return '<a href=\'/studentdetails?studentid=' + field + '\'>' + field + '</a>'
-                }
-            }],
-            keyfields: ["ID"],
             showOnlyMode: true,
-            showOnlyFields: ["Name", "dateofbirth", "comments"],
+            showOnlyFields: ["name", "email"],
             datetimefields: ["datecreated"],
-            showPagination: false,
             paginationPageSize: 10,
             pageSize: 20,
         };
@@ -106,7 +89,15 @@
                 TEST1.data = data.fathers;
                 TEST2.data = data.fathers;
                 TEST3.data = data.fathers;
-                $('#container1').tablerender('renderTable', TEST1);
+                var scrubbeddata = [];
+                $.each(data.fathers, function (index, item) {
+
+                    scrubbeddata.push({name: item["name"], email : item["email"] })
+                });
+
+                TEST3.data = scrubbeddata;
+
+                $('#container1').tablerender('renderTable', TEST3);
                 //$('#container2').tablerender('renderTable', TEST2);
                 //$('#container3').tablerender('renderTable', TEST3);
             });

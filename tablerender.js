@@ -16,9 +16,9 @@ Contact Url : https://github.com/svivekvarma
         data: [],
         emptyDataMessage: "No data available to show",
         css: {
-            table: "table",
-            tablestyle: "max-width:1010px",
-            tdstyle: "max-width:40%",
+            table: "grid",
+            tablestyle: "",
+            tdstyle: "",
             tdclass: "",
             trstyle: "",
             trclass: ""
@@ -92,10 +92,7 @@ Contact Url : https://github.com/svivekvarma
             data = $this.data('tablerender');
 
             data.settings.headers = headers;
-            //console.log(data);
-            //console.log(settings);
-
-
+ 
             var arrHTML = [];
             arrHTML.push('<div class="searchsection"><label>Search </label><input type="search" class="searchtextfield" placeholder="Filter your results by typing search text"/></div>');
             arrHTML.push('<div class="clearboth"></div>');
@@ -118,8 +115,8 @@ Contact Url : https://github.com/svivekvarma
                     for (var i = 0; i < data.settings.headers.length; i++) {
                         arrHTML.push(' <th data-realname="' + data.settings.headers[i] + '">');
                         arrHTML.push(tablerender.headerOutput.apply($this, [data.settings.headers[i]]));
-                        arrHTML.push('<span class=\'asc\'>▲</span>');
-                        arrHTML.push('<span class=\'desc\'>▼</span>');
+                        arrHTML.push('<span class="sortindicator asc">&uarr;</span>');
+                        arrHTML.push('<span class="sortindicator desc">&darr;</span>');
                         arrHTML.push('</th>');
                     }
                 }
@@ -142,14 +139,11 @@ Contact Url : https://github.com/svivekvarma
             }
 
             arrHTML.push(' </thead>');
-            arrHTML.push(' <tbody>');
+            arrHTML.push(' <tbody>'); 
+            arrHTML =  arrHTML.concat(tablerender._getRowsHtml.apply($this));
             arrHTML.push(' </tbody>');
             arrHTML.push('</table>');
-            $this.append(arrHTML.join(''));
-
-            // Start generating the rows
-
-            tablerender.renderRows.apply($this);
+            $this.append(arrHTML.join('')); 
             $this.data('tablerender', data);
             tablerender._bind.apply($this);
         },
@@ -371,10 +365,7 @@ Contact Url : https://github.com/svivekvarma
                 return this;
             }
 
-            //console.log($(' th[data-realname=' + settings.sortField + ']', $this).attr('data-sortasc'));
-            //console.log(settings.sortField);
-            //console.log($(' th[data-realname=' + settings.sortField + ']', $this));
-
+       
             var currentSort = $(' th[data-realname=' + data.settings.sortField + ']', $this)
                 .attr('data-sortasc');
             $(' th', $this)
@@ -397,6 +388,27 @@ Contact Url : https://github.com/svivekvarma
             tablerender.renderRows.apply($this);
         },
         renderRows: function () {
+
+            var $this = $(this),data = $this.data('tablerender');
+
+            // If the plugin hasn't been initialized yet
+
+            if (!data) {
+
+                return this;
+            }
+
+            $this.children('.' + data.settings.css.table + ':first')
+               .children('tbody:first')
+               .html('');
+
+            var html = tablerender._getRowsHtml.apply($this);
+
+            $this.children('.' + data.settings.css.table + ':first')
+                   .children('tbody:first')
+                   .append(html.join(''));
+        },
+        _getRowsHtml: function () {
             var $this = $(this),
                 data = $this.data('tablerender');
             // If the plugin hasn't been initialized yet
@@ -405,9 +417,6 @@ Contact Url : https://github.com/svivekvarma
             }
             // Start generating the rows
 
-            $this.children('.' + data.settings.css.table + ':first')
-                .children('tbody:first')
-                .html('');
             arrHTML = [];
 
             // Pagination info is used to calculate which records to show
@@ -434,18 +443,13 @@ Contact Url : https://github.com/svivekvarma
             }
             if (data.settings.data.length === 0) {
                 var headers = data.settings.headers;
-
-                arrHTML = [];
                 arrHTML.push(' <tr>');
                 arrHTML.push(' <td colspan="' + headers.length + data.settings.amalgateColumns.length + '" class="norecords">No records found for the search criteria</td>');
-                arrHTML.push(' </tr>');
-                $this.children('.' + data.settings.css.table + ':first')
-                    .children('tbody:first')
-                    .append(arrHTML.join(''));
+                arrHTML.push(' </tr>'); 
             }
 
             for (var i = startrecord; i <= endrecord; i++) {
-                arrHTML = [];
+       
                 arrHTML.push(' <tr>');
                 if (data.settings.amalgateColumns.length > 0) {
                     for (var am = 0; am < data.settings.amalgateColumns.length; am++) {
@@ -467,6 +471,7 @@ Contact Url : https://github.com/svivekvarma
                     arrHTML.push(tablerender.fieldOutput.apply($this, [data.settings.data[i][data.settings.headers[j]], data.settings.headers[j], data.settings.data[i]]));
                     arrHTML.push(' </td>');
                 }
+
                 if (data.settings.amalgateColumns.length > 0) {
                     for (var am = 0; am < data.settings.amalgateColumns.length; am++) {
                         if (!data.settings.amalgateColumns[am].prepend) {
@@ -482,11 +487,10 @@ Contact Url : https://github.com/svivekvarma
                     }
                 }
                 arrHTML.push(' </tr>');
-                $this.children('.' + data.settings.css.table + ':first')
-                    .children('tbody:first')
-                    .append(arrHTML.join(''));
             }
-            data.settings.rowEvents();
+
+            return arrHTML;
+          
         },
         headerOutput: function () {
             var $this = $(this),
@@ -598,10 +602,9 @@ Contact Url : https://github.com/svivekvarma
         }
     };
     $.fn.tablerender = function (method, options) {
-        //defaults.dataconfiguration = {};
+     
         settings = $.extend(true, {}, defaults, options);
-        //console.log(defaults);
-        //console.log(settings);
+  
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {
