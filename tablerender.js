@@ -38,6 +38,7 @@ Contact Url : https://github.com/svivekvarma
         pageSize: 5,
         showSearchOption: false,
         showPrintOption: false,
+        showCsvOption: false,
         showExportOptions:false,
         dataconfiguration: {}
     };
@@ -97,13 +98,18 @@ Contact Url : https://github.com/svivekvarma
             if (data.settings.showSearchOption) {
 
                 arrHTML.push('<div class="searchsection"><label>Search </label><input type="search" class="searchtextfield" placeholder="Filter your results by typing search text"/></div>');
-                arrHTML.push('<div class="clearboth"></div>');
+                //arrHTML.push('<div class="clearboth"></div>');
             }
             if (data.settings.showPrintOption || data.settings.showExportOptions) {
                 arrHTML.push('<div class="exportoptions">');
                 if (data.settings.showPrintOption) {
                     arrHTML.push('<div class="icon printicon">');
                     arrHTML.push('<img src="images/printicon.png" width="100%"/>');
+                    arrHTML.push('</div>');
+                }
+                if (data.settings.showCsvOption) {
+                    arrHTML.push('<div class="icon csvicon">');
+                    arrHTML.push('<img src="images/csvicon.png" width="100%"/>');
                     arrHTML.push('</div>');
                 }
                 arrHTML.push('</div>');
@@ -217,6 +223,29 @@ Contact Url : https://github.com/svivekvarma
                 }
             });
 
+            // Bind csv events 
+
+            $this.on('click.tablerender .exportoptions', function () {
+                var $target = $(event.target);
+                $target = $target.is('div.icon') ? $target : $target.closest('div.icon').first();
+                if ($target.hasClass('csvicon')) {
+                    var data,link;
+                    var csv = tablerender._convertToCSV.apply($this);                   
+                    if (csv == null) return;
+                    filename ='export.csv';
+
+                    if (!csv.match(/^data:text\/csv/i)) {
+                        csv = 'data:text/csv;charset=utf-8,' + csv;
+                    }
+                    data = encodeURI(csv);
+                    link = document.createElement('a');
+                    link.setAttribute('href', data);
+                    link.setAttribute('download', filename);
+                    link.click();
+                    link.remove();
+                }
+            });
+
             // Bind pagination events
 
             $this.on('click.tablerender .tablerenderpagination', function () {
@@ -261,6 +290,38 @@ Contact Url : https://github.com/svivekvarma
                     tablerender.renderRows.apply($this);
                 }
             });
+        },
+        _convertToCSV: function convertArrayOfObjectsToCSV(args) {
+            var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+            $this = $(this);
+
+            data = ($this.data('tablerender')).settings.data;
+  
+            if (data == null || !data.length) {
+                return null;
+            }
+
+            columnDelimiter = columnDelimiter || ',';
+            lineDelimiter = lineDelimiter || '\n';
+            console.log(data);
+            keys = Object.keys(data[0]);
+
+            result = '';
+            result += keys.join(columnDelimiter);
+            result += lineDelimiter;
+
+            data.forEach(function(item) {
+                ctr = 0;
+                keys.forEach(function(key) {
+                    if (ctr > 0) result += columnDelimiter;
+
+                    result += item[key];
+                    ctr++;
+                });
+                result += lineDelimiter;
+            });
+
+            return result;
         },
         customSort: function (property, type) {
             var sortOrder = 1;
