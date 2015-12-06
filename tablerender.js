@@ -32,11 +32,13 @@ Contact Url : https://github.com/svivekvarma
         amalgateColumns: [],
         datefields: [],
         datetimefields: [],
-        rowEvents: function () {},
+        rowEvents: function () { },
         showPagination: true,
         paginationPageSize: 5,
         pageSize: 5,
-        showSearchField: true,
+        showSearchOption: false,
+        showPrintOption: false,
+        showExportOptions:false,
         dataconfiguration: {}
     };
     var settings = {};
@@ -66,13 +68,11 @@ Contact Url : https://github.com/svivekvarma
                         }
                     }
                 }
-
                 config.settings.data = filtereddata;
             }
             $this.data('tablerender', config);
             tablerender.renderPagination.apply($this);
             tablerender.renderRows.apply($this);
-
         },
         _renderTable: function (data) {
 
@@ -92,11 +92,31 @@ Contact Url : https://github.com/svivekvarma
             data = $this.data('tablerender');
 
             data.settings.headers = headers;
- 
-            var arrHTML = [];
-            arrHTML.push('<div class="searchsection"><label>Search </label><input type="search" class="searchtextfield" placeholder="Filter your results by typing search text"/></div>');
-            arrHTML.push('<div class="clearboth"></div>');
 
+            var arrHTML = [];
+            if (data.settings.showSearchOption) {
+
+                arrHTML.push('<div class="searchsection"><label>Search </label><input type="search" class="searchtextfield" placeholder="Filter your results by typing search text"/></div>');
+                arrHTML.push('<div class="clearboth"></div>');
+            }
+            if (data.settings.showPrintOption || data.settings.showExportOptions) {
+                arrHTML.push('<div class="exportoptions">');
+                if (data.settings.showPrintOption) {
+                    arrHTML.push('<div class="icon printicon">');
+                    arrHTML.push('<img src="images/printicon.png" width="100%"/>');
+                    arrHTML.push('</div>');
+                }
+                arrHTML.push('</div>');
+            }
+            arrHTML = arrHTML.concat(tablerender._generateTable.apply($this,[false]));
+            $this.append(arrHTML.join(''));
+            $this.data('tablerender', data);
+            tablerender._bind.apply($this);
+        },
+        _generateTable: function (exportmode) {
+            var $this = $(this);
+            var data = $this.data('tablerender');
+            var arrHTML = [];
             arrHTML.push('<table class=\'' + data.settings.css.table + '\'>');
             arrHTML.push(' <thead>');
             if ((data.settings.headers.length > 0 || data.settings.amalgateColumns.length > 0) && data.settings.data.length > 0) {
@@ -110,7 +130,6 @@ Contact Url : https://github.com/svivekvarma
                         }
                     }
                 }
-
                 if (data.settings.headers.length > 0) {
                     for (var i = 0; i < data.settings.headers.length; i++) {
                         arrHTML.push(' <th data-realname="' + data.settings.headers[i] + '">');
@@ -139,13 +158,11 @@ Contact Url : https://github.com/svivekvarma
             }
 
             arrHTML.push(' </thead>');
-            arrHTML.push(' <tbody>'); 
-            arrHTML =  arrHTML.concat(tablerender._getRowsHtml.apply($this));
+            arrHTML.push(' <tbody>');
+            arrHTML = arrHTML.concat(tablerender._getRowsHtml.apply($this,[exportmode]));
             arrHTML.push(' </tbody>');
             arrHTML.push('</table>');
-            $this.append(arrHTML.join('')); 
-            $this.data('tablerender', data);
-            tablerender._bind.apply($this);
+            return arrHTML;
         },
         _bind: function () {
 
@@ -179,9 +196,26 @@ Contact Url : https://github.com/svivekvarma
                     data.settings.dataconfiguration.currentBlock = 1;
                     data.settings.dataconfiguration.currentPage = 1;
                     $this.data('tablerender', data);
-
                     tablerender._searchText.apply($this, [$(this).val()]);
                 });
+
+            // Bind print events 
+
+            $this.on('click.tablerender .exportoptions', function () {
+                var $target = $(event.target);
+                $target = $target.is('div.icon') ? $target : $target.closest('div.icon').first();
+                if ($target.hasClass('printicon')) {
+                    var data = $this.data('tablerender');
+                    var arrHtml = tablerender._generateTable.apply($this, [true]);
+                    arrHtml.splice(0, 0, "<link href='tablerender.css' rel='stylesheet' media='all'/>");
+                    var printWin = window.open("");
+                    printWin.document.write(arrHtml.join(''));
+                    setTimeout(function () {
+                        printWin.print();
+                        printWin.close();
+                    }, 100);
+                }
+            });
 
             // Bind pagination events
 
@@ -348,12 +382,9 @@ Contact Url : https://github.com/svivekvarma
                 $(' .tablerenderpagination > ul', $this)
                     .html(arrPagination.join(''));
 
-
                 data.settings.dataconfiguration.renderedPagination = true;
                 //tablerender._bindPaginationEvents.apply($this);
                 $this.data('tablerender', data);
-
-
             }
         },
         sort: function () {
@@ -365,7 +396,7 @@ Contact Url : https://github.com/svivekvarma
                 return this;
             }
 
-       
+
             var currentSort = $(' th[data-realname=' + data.settings.sortField + ']', $this)
                 .attr('data-sortasc');
             $(' th', $this)
@@ -389,7 +420,7 @@ Contact Url : https://github.com/svivekvarma
         },
         renderRows: function () {
 
-            var $this = $(this),data = $this.data('tablerender');
+            var $this = $(this), data = $this.data('tablerender');
 
             // If the plugin hasn't been initialized yet
 
@@ -408,7 +439,7 @@ Contact Url : https://github.com/svivekvarma
                    .children('tbody:first')
                    .append(html.join(''));
         },
-        _getRowsHtml: function () {
+        _getRowsHtml: function (printmode) {
             var $this = $(this),
                 data = $this.data('tablerender');
             // If the plugin hasn't been initialized yet
@@ -422,7 +453,7 @@ Contact Url : https://github.com/svivekvarma
             // Pagination info is used to calculate which records to show
             var startrecord = 0,
                 endrecord = 0;
-            if (data.settings.showPagination) {
+            if (data.settings.showPagination && !printmode)  {
 
                 var currentpage = data.settings.dataconfiguration.currentPage,
                     currentpagesize = data.settings.pageSize;
@@ -445,11 +476,11 @@ Contact Url : https://github.com/svivekvarma
                 var headers = data.settings.headers;
                 arrHTML.push(' <tr>');
                 arrHTML.push(' <td colspan="' + headers.length + data.settings.amalgateColumns.length + '" class="norecords">No records found for the search criteria</td>');
-                arrHTML.push(' </tr>'); 
+                arrHTML.push(' </tr>');
             }
 
             for (var i = startrecord; i <= endrecord; i++) {
-       
+
                 arrHTML.push(' <tr>');
                 if (data.settings.amalgateColumns.length > 0) {
                     for (var am = 0; am < data.settings.amalgateColumns.length; am++) {
@@ -490,7 +521,7 @@ Contact Url : https://github.com/svivekvarma
             }
 
             return arrHTML;
-          
+
         },
         headerOutput: function () {
             var $this = $(this),
@@ -602,9 +633,9 @@ Contact Url : https://github.com/svivekvarma
         }
     };
     $.fn.tablerender = function (method, options) {
-     
+
         settings = $.extend(true, {}, defaults, options);
-  
+
         if (methods[method]) {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
         } else if (typeof method === 'object' || !method) {

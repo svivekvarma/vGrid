@@ -1,3 +1,7 @@
+body{
+  -webkit-print-color-adjust:exact;
+}
+
 .clearboth {
     clear: both !important;
 }
@@ -70,6 +74,18 @@ ul li.active:hover {
     margin: 5px;
 }
 
+.exportoptions {
+    display: inline-block;
+    float: right;
+    max-width: 200px;
+}
+
+    .exportoptions .icon {
+        display:inline-block;
+        width:40px;
+        cursor:pointer;    
+    }
+
 .grid {
     margin: 5px auto;
     border-collapse: collapse;
@@ -81,6 +97,7 @@ ul li.active:hover {
     width: 100%;
     word-wrap: break-word;
 }
+
 
 .overridewidth {
     width: auto;
