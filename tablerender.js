@@ -22,7 +22,7 @@ Contact Url : https://github.com/svivekvarma
         // Browser globals (root is window)
         window.returnExports = factory(window.jQuery);
     }
-}(this,function ($) {
+}(this, function ($) {
     var defaults = {
         data: [],
         emptyDataMessage: "No data available to show",
@@ -43,14 +43,14 @@ Contact Url : https://github.com/svivekvarma
         amalgateColumns: [],
         datefields: [],
         datetimefields: [],
-        rowEvents: function () { },
+        rowEvents: function () {},
         showPagination: true,
         paginationPageSize: 5,
         pageSize: 5,
         showSearchOption: false,
         showPrintOption: false,
         showCsvOption: false,
-        showExportOptions:false,
+        showExportOptions: false,
         dataconfiguration: {}
     };
     var settings = {};
@@ -115,17 +115,17 @@ Contact Url : https://github.com/svivekvarma
                 arrHTML.push('<div class="exportoptions">');
                 if (data.settings.showPrintOption) {
                     arrHTML.push('<div class="icon printicon">');
-                    arrHTML.push('<img src="images/printicon.png" width="100%"/>');
+
                     arrHTML.push('</div>');
                 }
                 if (data.settings.showCsvOption) {
-                    arrHTML.push('<div class="icon csvicon">');
-                    arrHTML.push('<img src="images/csvicon.png" width="100%"/>');
+                    arrHTML.push('<div class="icon downloadicon">');
+
                     arrHTML.push('</div>');
                 }
                 arrHTML.push('</div>');
             }
-            arrHTML = arrHTML.concat(tablerender._generateTable.apply($this,[false]));
+            arrHTML = arrHTML.concat(tablerender._generateTable.apply($this, [false]));
             $this.append(arrHTML.join(''));
             $this.data('tablerender', data);
             tablerender._bind.apply($this);
@@ -176,7 +176,7 @@ Contact Url : https://github.com/svivekvarma
 
             arrHTML.push(' </thead>');
             arrHTML.push(' <tbody>');
-            arrHTML = arrHTML.concat(tablerender._getRowsHtml.apply($this,[exportmode]));
+            arrHTML = arrHTML.concat(tablerender._getRowsHtml.apply($this, [exportmode]));
             arrHTML.push(' </tbody>');
             arrHTML.push('</table>');
             return arrHTML;
@@ -239,11 +239,11 @@ Contact Url : https://github.com/svivekvarma
             $this.on('click.tablerender .exportoptions', function () {
                 var $target = $(event.target);
                 $target = $target.is('div.icon') ? $target : $target.closest('div.icon').first();
-                if ($target.hasClass('csvicon')) {
-                    var data,link;
-                    var csv = tablerender._convertToCSV.apply($this);                   
+                if ($target.hasClass('downloadicon')) {
+                    var data, link;
+                    var csv = tablerender._convertToCSV.apply($this);
                     if (csv == null) return;
-                    filename ='export.csv';
+                    filename = 'export.csv';
 
                     if (!csv.match(/^data:text\/csv/i)) {
                         csv = 'data:text/csv;charset=utf-8,' + csv;
@@ -254,7 +254,9 @@ Contact Url : https://github.com/svivekvarma
                     var mimeType = 'application/octet-stream';
 
                     if (navigator.msSaveBlob) { // IE10
-                        return navigator.msSaveBlob(new Blob([csv], { type: mimeType }), filename);
+                        return navigator.msSaveBlob(new Blob([csv], {
+                            type: mimeType
+                        }), filename);
                     } else if ('download' in a) { //html5 A[download]
                         a.href = 'data:' + mimeType + ',' + encodeURIComponent(csv);
                         a.setAttribute('download', filename);
@@ -327,7 +329,7 @@ Contact Url : https://github.com/svivekvarma
             $this = $(this);
 
             data = ($this.data('tablerender')).settings.data;
-  
+
             if (data == null || !data.length) {
                 return null;
             }
@@ -340,9 +342,9 @@ Contact Url : https://github.com/svivekvarma
             result += keys.join(columnDelimiter);
             result += lineDelimiter;
 
-            data.forEach(function(item) {
+            data.forEach(function (item) {
                 ctr = 0;
-                keys.forEach(function(key) {
+                keys.forEach(function (key) {
                     if (ctr > 0) result += columnDelimiter;
 
                     result += item[key];
@@ -510,7 +512,8 @@ Contact Url : https://github.com/svivekvarma
         },
         renderRows: function () {
 
-            var $this = $(this), data = $this.data('tablerender');
+            var $this = $(this),
+                data = $this.data('tablerender');
 
             // If the plugin hasn't been initialized yet
 
@@ -520,14 +523,14 @@ Contact Url : https://github.com/svivekvarma
             }
 
             $this.children('.' + data.settings.css.table + ':first')
-               .children('tbody:first')
-               .html('');
+                .children('tbody:first')
+                .html('');
 
             var html = tablerender._getRowsHtml.apply($this);
 
             $this.children('.' + data.settings.css.table + ':first')
-                   .children('tbody:first')
-                   .append(html.join(''));
+                .children('tbody:first')
+                .append(html.join(''));
         },
         _getRowsHtml: function (printmode) {
             var $this = $(this),
@@ -543,7 +546,7 @@ Contact Url : https://github.com/svivekvarma
             // Pagination info is used to calculate which records to show
             var startrecord = 0,
                 endrecord = 0;
-            if (data.settings.showPagination && !printmode)  {
+            if (data.settings.showPagination && !printmode) {
 
                 var currentpage = data.settings.dataconfiguration.currentPage,
                     currentpagesize = data.settings.pageSize;
