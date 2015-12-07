@@ -248,12 +248,32 @@ Contact Url : https://github.com/svivekvarma
                     if (!csv.match(/^data:text\/csv/i)) {
                         csv = 'data:text/csv;charset=utf-8,' + csv;
                     }
-                    data = encodeURI(csv);
-                    link = document.createElement('a');
-                    link.setAttribute('href', data);
-                    link.setAttribute('download', filename);
-                    link.click();
-                    link.remove();
+                    //data = encodeURI(csv);
+
+                    var a = document.createElement('a');
+                    var mimeType = 'application/octet-stream';
+
+                    if (navigator.msSaveBlob) { // IE10
+                        return navigator.msSaveBlob(new Blob([csv], { type: mimeType }), filename);
+                    } else if ('download' in a) { //html5 A[download]
+                        a.href = 'data:' + mimeType + ',' + encodeURIComponent(csv);
+                        a.setAttribute('download', filename);
+                        document.body.appendChild(a);
+                        setTimeout(function () {
+                            a.click();
+                            document.body.removeChild(a);
+                        }, 66);
+                        return true;
+                    } else { //do iframe dataURL download (old ch+FF):
+                        var f = document.createElement('iframe');
+                        document.body.appendChild(f);
+                        f.src = 'data:' + mimeType + ',' + encodeURIComponent(csv);
+                        setTimeout(function () {
+                            document.body.removeChild(f);
+                        }, 333);
+                        return true;
+                    }
+
                 }
             });
 
@@ -314,7 +334,6 @@ Contact Url : https://github.com/svivekvarma
 
             columnDelimiter = columnDelimiter || ',';
             lineDelimiter = lineDelimiter || '\n';
-            console.log(data);
             keys = Object.keys(data[0]);
 
             result = '';
@@ -331,7 +350,6 @@ Contact Url : https://github.com/svivekvarma
                 });
                 result += lineDelimiter;
             });
-
             return result;
         },
         customSort: function (property, type) {
