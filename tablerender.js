@@ -245,9 +245,9 @@ Contact Url : https://github.com/svivekvarma
                     if (csv == null) return;
                     filename = 'export.csv';
 
-                    if (!csv.match(/^data:text\/csv/i)) {
-                        csv = 'data:text/csv;charset=utf-8,' + csv;
-                    }
+                    //if (!csv.match(/^data:text\/csv/i)) {
+                    //    csv = 'data:text/csv;charset=utf-8,' + csv;
+                    //}
                     //data = encodeURI(csv);
 
                     var a = document.createElement('a');

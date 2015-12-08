@@ -79,6 +79,7 @@ ul li.active:hover {
     display: inline-block;
     float: right;
     max-width: 200px;
+    margin: 10px;
 }
 
 .exportoptions .icon {
@@ -93,11 +94,11 @@ ul li.active:hover {
 }
 
 .printicon {
-    background: url('../images/tablerender.png') 0px 0px;
+    background: url('./images/tablerender.png') 0px 0px;
 }
 
 .downloadicon {
-    background: url('../images/tablerender.png') 0px -37px;
+    background: url('./images/tablerender.png') 0px -37px;
 }
 
 .grid {
